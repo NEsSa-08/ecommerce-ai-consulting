@@ -46,18 +46,18 @@
     }
 
     .section-subtitle {
-        color: #64748b;
+        color: #515d6d;
         font-size: 14px;
         margin-bottom: 20px;
     }
 
     .btn-primary {
-        background-color: #2563eb;
+        background-color: #2e68e4;
         border: none;
     }
 
     .btn-primary:hover {
-        background-color: #1d4ed8;
+        background-color: #87d81d;
     }
 </style>
 
