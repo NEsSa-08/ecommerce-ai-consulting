@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
-
+<!-- Mejora en diseño de página principal -->
 <div class="hero">
     <h1 class="display-4 fw-bold">Consultoría en Inteligencia Artificial</h1>
     <p class="lead">Transformamos tu negocio con soluciones inteligentes, automatización y análisis avanzado.</p>
