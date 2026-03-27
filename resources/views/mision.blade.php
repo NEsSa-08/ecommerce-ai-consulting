@@ -4,7 +4,7 @@
 @section('content')
 
 <div class="container">
-
+ <!-- se hizo la informacion de la mision -->
     <div class="text-center mb-5">
         <h1 class="fw-bold">Nuestra Misión</h1>
         <p class="lead">Transformar datos en decisiones inteligentes</p>
@@ -27,6 +27,7 @@
             en un entorno empresarial cada vez más digital.
         </p>
     </div>
+
 
     <!-- OBJETIVOS -->
     <div class="row text-center">
