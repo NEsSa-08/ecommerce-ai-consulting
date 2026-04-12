@@ -2,75 +2,95 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Usuario;
 use Illuminate\Http\Request;
-use App\Models\User;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class AuthController extends Controller
 {
-    public function showLogin() {
+    public function showLogin()
+    {
         return view('auth.login');
     }
 
-    public function showRegister() {
+    public function login(Request $request)
+    {
+        $request->validate([
+            'correo' => 'required|email',
+            'clave'  => 'required',
+        ]);
+
+        $credenciales = [
+            'correo' => $request->correo,
+            'password' => $request->clave, // Auth internamente usa 'password'
+        ];
+
+        if (Auth::attempt($credenciales)) {
+            $request->session()->regenerate();
+            $usuario = Auth::user();
+
+            Log::channel('autenticacion')->info('Login exitoso', [
+                'usuario_id' => $usuario->id,
+                'correo'     => $usuario->correo,
+                'ip'         => $request->ip(),
+            ]);
+
+            return match($usuario->rol) {
+                'administrador' => redirect('/admin/dashboard'),
+                'gerente'       => redirect('/gerente'),
+                default         => redirect('/cliente'),
+            };
+        }
+
+        Log::channel('autenticacion')->warning('Login fallido', [
+            'correo' => $request->correo,
+            'ip'     => $request->ip(),
+        ]);
+
+        return back()->withErrors(['correo' => 'Credenciales incorrectas.']);
+    }
+
+    public function showRegister()
+    {
         return view('auth.register');
     }
 
-    public function login(Request $request)
-{
-    $request->validate([
-        'email' => 'required|email',
-        'password' => 'required'
-    ], [
-        'email.required' => 'El correo es obligatorio',
-        'email.email' => 'Formato de correo inválido',
-        'password.required' => 'La contraseña es obligatoria'
-    ]);
+    public function register(Request $request)
+    {
+        $request->validate([
+            'nombre'    => 'required|string|max:100',
+            'apellidos' => 'required|string|max:100',
+            'correo'    => 'required|email|unique:usuarios,correo',
+            'clave'     => 'required|min:6|confirmed',
+        ]);
 
-    if (Auth::attempt($request->only('email','password'))) {
+        Usuario::create([
+            'nombre'    => $request->nombre,
+            'apellidos' => $request->apellidos,
+            'correo'    => $request->correo,
+            'clave'     => Hash::make($request->clave),
+            'rol'       => 'cliente',
+        ]);
 
-        $user = Auth::user();
-
-        if ($user->rol == 'cliente') return redirect('/cliente');
-        if ($user->rol == 'empleado') return redirect('/empleado');
-        return redirect('/gerente');
+        return redirect('/login')->with('success', 'Usuario registrado correctamente.');
     }
 
-    return back()->withErrors([
-        'email' => 'Credenciales incorrectas'
-    ])->withInput();
-}
-    public function register(Request $request)
-{
-    $request->validate([
-        'name' => 'required|min:3|max:50',
-        'email' => 'required|email|unique:users,email',
-        'password' => 'required|min:6|confirmed',
-        'rol' => 'required'
-    ], [
-        'name.required' => 'El nombre es obligatorio',
-        'email.required' => 'El correo es obligatorio',
-        'email.email' => 'El correo no es válido',
-        'email.unique' => 'Este correo ya está registrado',
-        'password.required' => 'La contraseña es obligatoria',
-        'password.min' => 'La contraseña debe tener al menos 6 caracteres',
-        'password.confirmed' => 'Las contraseñas no coinciden',
-        'rol.required' => 'Debes seleccionar un rol'
-    ]);
-
-    User::create([
-        'name' => $request->name,
-        'email' => $request->email,
-        'password' => bcrypt($request->password),
-        'rol' => $request->rol
-    ]);
-
-    return redirect('/login')->with('success', 'Registro exitoso');
-}
-
-    public function logout()
+    public function logout(Request $request)
     {
+        $usuario = Auth::user();
+
+        Log::channel('autenticacion')->info('Logout', [
+            'usuario_id' => $usuario->id,
+            'correo'     => $usuario->correo,
+            'ip'         => $request->ip(),
+        ]);
+
         Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
         return redirect('/');
     }
 }

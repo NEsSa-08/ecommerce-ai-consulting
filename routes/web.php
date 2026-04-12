@@ -1,43 +1,29 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\UserController;
+use Illuminate\Support\Facades\Route;
 
-// Página principal
-Route::get('/', function () {
-    return view('welcome');
-});
-
-// Login
-Route::get('/login', [AuthController::class, 'showLogin']);
-Route::post('/login', [AuthController::class, 'login']);
-
-// Registro
-Route::get('/register', [AuthController::class, 'showRegister']);
-Route::post('/register', [AuthController::class, 'register']);
-
-// Logout
-Route::post('/logout', [AuthController::class, 'logout']);
-
-// Dashboards
-Route::get('/cliente', function () {
-    return view('cliente');
-})->middleware('auth');
-
-Route::get('/empleado', function () {
-    return view('empleado');
-})->middleware('auth');
-
-Route::get('/gerente', function () {
-    return view('gerente');
-})->middleware('auth');
-
-// Páginas públicas (sin login)
+// Páginas públicas
+Route::get('/', fn() => view('welcome'));
 Route::view('/quienes-somos', 'quienes');
 Route::view('/contacto', 'contacto');
 Route::view('/vision', 'vision');
 Route::view('/mision', 'mision');
 
-use App\Http\Controllers\UserController;
+// Autenticación
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/register', [AuthController::class, 'showRegister']);
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
+
+// Dashboards por rol
+Route::middleware('auth')->group(function () {
+    Route::get('/cliente', fn() => view('cliente'));
+    Route::get('/gerente', fn() => view('gerente'));
+    Route::get('/admin/dashboard', fn() => view('admin'));
+});
 
 // CRUD usuarios
 Route::middleware('auth')->group(function () {

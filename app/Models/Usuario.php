@@ -59,4 +59,9 @@ class Usuario extends Authenticatable
             'id'             // PK en productos (se usa con la pivote)
         );
     }
+
+    public function getAuthPassword()
+    {
+        return $this->clave;
+    }
 }
