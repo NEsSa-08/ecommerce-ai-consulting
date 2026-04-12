@@ -15,42 +15,42 @@ class AuthController extends Controller
         return view('auth.login');
     }
 
-    public function login(Request $request)
-    {
-        $request->validate([
-            'correo' => 'required|email',
-            'clave'  => 'required',
+   public function login(Request $request)
+{
+    $request->validate([
+        'email'    => 'required|email',
+        'password' => 'required',
+    ]);
+
+    $credenciales = [
+        'correo'   => $request->email,
+        'password' => $request->password,
+    ];
+
+    if (Auth::attempt($credenciales)) {
+        $request->session()->regenerate();
+        $usuario = Auth::user();
+
+        Log::channel('autenticacion')->info('Login exitoso', [
+            'usuario_id' => $usuario->id,
+            'correo'     => $usuario->correo,
+            'ip'         => $request->ip(),
         ]);
 
-        $credenciales = [
-            'correo' => $request->correo,
-            'password' => $request->clave, // Auth internamente usa 'password'
-        ];
-
-        if (Auth::attempt($credenciales)) {
-            $request->session()->regenerate();
-            $usuario = Auth::user();
-
-            Log::channel('autenticacion')->info('Login exitoso', [
-                'usuario_id' => $usuario->id,
-                'correo'     => $usuario->correo,
-                'ip'         => $request->ip(),
-            ]);
-
-            return match($usuario->rol) {
-                'administrador' => redirect('/admin/dashboard'),
-                'gerente'       => redirect('/gerente'),
-                default         => redirect('/cliente'),
-            };
-        }
-
-        Log::channel('autenticacion')->warning('Login fallido', [
-            'correo' => $request->correo,
-            'ip'     => $request->ip(),
-        ]);
-
-        return back()->withErrors(['correo' => 'Credenciales incorrectas.']);
+        return match($usuario->rol) {
+            'administrador' => redirect('/admin/dashboard'),
+            'gerente'       => redirect('/gerente'),
+            default         => redirect('/cliente'),
+        };
     }
+
+    Log::channel('autenticacion')->warning('Login fallido', [
+        'correo' => $request->email,
+        'ip'     => $request->ip(),
+    ]);
+
+    return back()->withErrors(['email' => 'Credenciales incorrectas.']);
+}
 
     public function showRegister()
     {
@@ -78,19 +78,19 @@ class AuthController extends Controller
     }
 
     public function logout(Request $request)
-    {
-        $usuario = Auth::user();
+{
+    $usuario = Auth::user();
 
-        Log::channel('autenticacion')->info('Logout', [
-            'usuario_id' => $usuario->id,
-            'correo'     => $usuario->correo,
-            'ip'         => $request->ip(),
-        ]);
+    Log::channel('autenticacion')->info('Logout', [
+        'usuario_id' => $usuario->id,
+        'correo'     => $usuario->correo,
+        'ip'         => $request->ip(),
+    ]);
 
-        Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
+    Auth::logout();
+    $request->session()->invalidate();
+    $request->session()->regenerateToken();
 
-        return redirect('/');
-    }
+    return redirect('/');
+}
 }

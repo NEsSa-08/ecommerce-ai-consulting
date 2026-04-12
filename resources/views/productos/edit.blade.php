@@ -1,0 +1,78 @@
+@extends('layouts.app')
+
+@section('content')
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h2>Editar producto</h2>
+
+            @if($errors->any())
+                <div class="alert alert-danger">
+                    <ul class="mb-0">
+                        @foreach($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+            @endif
+
+            <form method="POST" action="/productos/update/{{ $producto->id }}">
+                @csrf
+                <div class="mb-3">
+                    <label class="form-label">Nombre</label>
+                    <input type="text" name="nombre" class="form-control @error('nombre') is-invalid @enderror"
+                           value="{{ old('nombre', $producto->nombre) }}">
+                    @error('nombre')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Descripción</label>
+                    <textarea name="descripcion" class="form-control @error('descripcion') is-invalid @enderror"
+                              rows="3">{{ old('descripcion', $producto->descripcion) }}</textarea>
+                    @error('descripcion')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Precio</label>
+                    <input type="number" step="0.01" name="precio"
+                           class="form-control @error('precio') is-invalid @enderror"
+                           value="{{ old('precio', $producto->precio) }}">
+                    @error('precio')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Existencia</label>
+                    <input type="number" name="existencia"
+                           class="form-control @error('existencia') is-invalid @enderror"
+                           value="{{ old('existencia', $producto->existencia) }}">
+                    @error('existencia')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Categorías</label>
+                    <select name="categorias[]" class="form-control" multiple>
+                        @foreach($categorias as $categoria)
+                            <option value="{{ $categoria->id }}"
+                                {{ $producto->categorias->contains($categoria->id) ? 'selected' : '' }}>
+                                {{ $categoria->nombre }}
+                            </option>
+                        @endforeach
+                    </select>
+                    <small class="text-muted">Mantén Ctrl para seleccionar varias.</small>
+                </div>
+
+                <button type="submit" class="btn btn-warning w-100">Actualizar</button>
+                <a href="/productos" class="btn btn-secondary w-100 mt-2">Cancelar</a>
+            </form>
+        </div>
+    </div>
+</div>
+@endsection
