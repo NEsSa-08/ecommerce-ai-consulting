@@ -3,6 +3,9 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProductoController;
+use App\Http\Controllers\CategoriaController;
+use App\Http\Controllers\VentaController;
 
 // Páginas públicas
 Route::get('/', fn() => view('welcome'));
@@ -33,4 +36,30 @@ Route::middleware('auth')->group(function () {
     Route::get('/users/edit/{id}', [UserController::class, 'edit']);
     Route::post('/users/update/{id}', [UserController::class, 'update']);
     Route::get('/users/delete/{id}', [UserController::class, 'destroy']);
+});
+// Rutas de productos
+Route::middleware('auth')->group(function () {
+    Route::get('/productos', [ProductoController::class, 'index']);
+    Route::get('/productos/create', [ProductoController::class, 'create']);
+    Route::post('/productos', [ProductoController::class, 'store']);
+    Route::get('/productos/edit/{producto}', [ProductoController::class, 'edit']);
+    Route::post('/productos/update/{producto}', [ProductoController::class, 'update']);
+    Route::get('/productos/delete/{producto}', [ProductoController::class, 'destroy']);
+});
+// Rutas de categorías
+Route::middleware('auth')->group(function () {
+    Route::get('/categorias', [CategoriaController::class, 'index']);
+    Route::get('/categorias/create', [CategoriaController::class, 'create']);
+    Route::post('/categorias', [CategoriaController::class, 'store']);
+    Route::get('/categorias/edit/{categoria}', [CategoriaController::class, 'edit']);
+    Route::post('/categorias/update/{categoria}', [CategoriaController::class, 'update']);
+    Route::get('/categorias/delete/{categoria}', [CategoriaController::class, 'destroy']);
+});
+
+// Rutas de ventas
+Route::middleware('auth')->group(function () {
+    Route::get('/ventas', [VentaController::class, 'index']);
+    Route::get('/ventas/create', [VentaController::class, 'create']);
+    Route::post('/ventas', [VentaController::class, 'store']);
+    Route::get('/ventas/delete/{venta}', [VentaController::class, 'destroy']);
 });
