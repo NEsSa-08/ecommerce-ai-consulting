@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use App\Http\Requests\StoreProductoRequest;
 use App\Http\Requests\UpdateProductoRequest;
+use App\Models\Categoria;
 
 class ProductoController extends Controller
 {
@@ -19,13 +20,14 @@ class ProductoController extends Controller
 
     // Mostrar formulario de creación
     public function create()
-    {
-        $this->authorize('crear', Producto::class);
-        return view('productos.create');
-    }
+{
+    $this->authorize('crear', Producto::class);
+    $categorias = Categoria::all();
+    return view('productos.create', compact('categorias'));
+}
 
     // Guardar producto nuevo
-  public function store(StoreProductoRequest $request)
+public function store(StoreProductoRequest $request)
 {
     $this->authorize('crear', Producto::class);
 
@@ -36,6 +38,11 @@ class ProductoController extends Controller
         'existencia'  => $request->existencia,
         'usuario_id'  => auth()->id(),
     ]);
+
+    // Sincronizar categorías
+    if ($request->has('categorias')) {
+        $producto->categorias()->sync($request->categorias);
+    }
 
     Log::channel('productos')->info('Producto creado', [
         'producto_id' => $producto->id,
@@ -48,17 +55,25 @@ class ProductoController extends Controller
 
     // Mostrar formulario de edición
     public function edit(Producto $producto)
-    {
-        $this->authorize('editar', $producto);
-        return view('productos.edit', compact('producto'));
-    }
+{
+    $this->authorize('editar', $producto);
+    $categorias = Categoria::all();
+    return view('productos.edit', compact('producto', 'categorias'));
+}
 
     // Actualizar producto
-    public function update(UpdateProductoRequest $request, Producto $producto)
+ public function update(UpdateProductoRequest $request, Producto $producto)
 {
     $this->authorize('editar', $producto);
 
     $producto->update($request->only(['nombre', 'descripcion', 'precio', 'existencia']));
+
+    // Sincronizar categorías
+    if ($request->has('categorias')) {
+        $producto->categorias()->sync($request->categorias);
+    } else {
+        $producto->categorias()->detach();
+    }
 
     Log::channel('productos')->info('Producto editado', [
         'producto_id' => $producto->id,
