@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Producto;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use App\Http\Requests\StoreProductoRequest;
+use App\Http\Requests\UpdateProductoRequest;
 
 class ProductoController extends Controller
 {
@@ -23,26 +25,26 @@ class ProductoController extends Controller
     }
 
     // Guardar producto nuevo
-    public function store(Request $request)
-    {
-        $this->authorize('crear', Producto::class);
+  public function store(StoreProductoRequest $request)
+{
+    $this->authorize('crear', Producto::class);
 
-        $producto = Producto::create([
-            'nombre'      => $request->nombre,
-            'descripcion' => $request->descripcion,
-            'precio'      => $request->precio,
-            'existencia'  => $request->existencia,
-            'usuario_id'  => auth()->id(),
-        ]);
+    $producto = Producto::create([
+        'nombre'      => $request->nombre,
+        'descripcion' => $request->descripcion,
+        'precio'      => $request->precio,
+        'existencia'  => $request->existencia,
+        'usuario_id'  => auth()->id(),
+    ]);
 
-        Log::channel('productos')->info('Producto creado', [
-            'producto_id' => $producto->id,
-            'nombre'      => $producto->nombre,
-            'usuario_id'  => auth()->id(),
-        ]);
+    Log::channel('productos')->info('Producto creado', [
+        'producto_id' => $producto->id,
+        'nombre'      => $producto->nombre,
+        'usuario_id'  => auth()->id(),
+    ]);
 
-        return redirect('/productos')->with('success', 'Producto creado.');
-    }
+    return redirect('/productos')->with('success', 'Producto creado.');
+}
 
     // Mostrar formulario de edición
     public function edit(Producto $producto)
@@ -52,19 +54,19 @@ class ProductoController extends Controller
     }
 
     // Actualizar producto
-    public function update(Request $request, Producto $producto)
-    {
-        $this->authorize('editar', $producto);
+    public function update(UpdateProductoRequest $request, Producto $producto)
+{
+    $this->authorize('editar', $producto);
 
-        $producto->update($request->only(['nombre', 'descripcion', 'precio', 'existencia']));
+    $producto->update($request->only(['nombre', 'descripcion', 'precio', 'existencia']));
 
-        Log::channel('productos')->info('Producto editado', [
-            'producto_id' => $producto->id,
-            'usuario_id'  => auth()->id(),
-        ]);
+    Log::channel('productos')->info('Producto editado', [
+        'producto_id' => $producto->id,
+        'usuario_id'  => auth()->id(),
+    ]);
 
-        return redirect('/productos')->with('success', 'Producto actualizado.');
-    }
+    return redirect('/productos')->with('success', 'Producto actualizado.');
+}
 
     // Eliminar producto
     public function destroy(Producto $producto)
