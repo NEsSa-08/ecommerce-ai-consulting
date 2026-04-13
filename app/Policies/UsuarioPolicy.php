@@ -12,14 +12,16 @@ class UsuarioPolicy
         return $auth->rol === 'administrador';
     }
 
-    // Solo administrador puede editar usuarios
+    // Reglas de edición por rol
     public function editar(Usuario $auth, Usuario $objetivo): bool
     {
+        // Administrador puede editar a cualquiera
         if ($auth->rol === 'administrador') {
             return true;
         }
 
         // Gerente solo puede editar clientes
+        // No puede editar otros gerentes ni administradores
         if ($auth->rol === 'gerente') {
             return $objetivo->rol === 'cliente';
         }
@@ -27,9 +29,14 @@ class UsuarioPolicy
         return false;
     }
 
-    // Solo administrador puede eliminar usuarios
+    // Solo administrador puede eliminar
     public function eliminar(Usuario $auth, Usuario $objetivo): bool
     {
+        // No puede eliminarse a sí mismo
+        if ($auth->id === $objetivo->id) {
+            return false;
+        }
+
         return $auth->rol === 'administrador';
     }
 }

@@ -2,62 +2,67 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
-use App\Models\User;
+use App\Models\Usuario;
+use App\Http\Requests\StoreUsuarioRequest;
+use App\Http\Requests\UpdateUsuarioRequest;
+use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
-    // LISTAR
     public function index()
     {
-        $users = User::all();
+        $users = Usuario::all();
         return view('users.index', compact('users'));
     }
 
-    // FORM CREAR
     public function create()
     {
+        $this->authorize('crear', Usuario::class);
         return view('users.create');
     }
 
-    // GUARDAR
-    public function store(Request $request)
+    public function store(StoreUsuarioRequest $request)
     {
-        User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-            'rol' => $request->rol
+        $this->authorize('crear', Usuario::class);
+
+        Usuario::create([
+            'nombre'    => $request->nombre,
+            'apellidos' => $request->apellidos,
+            'correo'    => $request->correo,
+            'clave'     => Hash::make($request->clave),
+            'rol'       => $request->rol,
         ]);
 
-        return redirect('/users');
+        return redirect('/users')->with('success', 'Usuario creado correctamente.');
     }
 
-    // FORM EDITAR
     public function edit($id)
     {
-        $user = User::find($id);
+        $user = Usuario::findOrFail($id);
+        $this->authorize('editar', $user);
         return view('users.edit', compact('user'));
     }
 
-    // ACTUALIZAR
-    public function update(Request $request, $id)
+    public function update(UpdateUsuarioRequest $request, $id)
     {
-        $user = User::find($id);
+        $user = Usuario::findOrFail($id);
+        $this->authorize('editar', $user);
 
         $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'rol' => $request->rol
+            'nombre'    => $request->nombre,
+            'apellidos' => $request->apellidos,
+            'correo'    => $request->correo,
+            'rol'       => $request->rol,
         ]);
 
-        return redirect('/users');
+        return redirect('/users')->with('success', 'Usuario actualizado correctamente.');
     }
 
-    // ELIMINAR
     public function destroy($id)
     {
-        User::destroy($id);
-        return redirect('/users');
+        $user = Usuario::findOrFail($id);
+        $this->authorize('eliminar', $user);
+        $user->delete();
+        return redirect('/users')->with('success', 'Usuario eliminado correctamente.');
     }
 }
