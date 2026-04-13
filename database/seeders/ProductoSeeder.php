@@ -11,33 +11,44 @@ class ProductoSeeder extends Seeder
 {
     public function run(): void
     {
-        // Tomamos el gerente como vendedor
         $vendedor = Usuario::where('rol', 'gerente')->first();
 
         $productos = [
             [
-                'nombre'      => 'Laptop HP',
-                'descripcion' => 'Laptop HP 15 pulgadas, 8GB RAM',
-                'precio'      => 12000.00,
+                'nombre'      => 'Consultoría IA Básica',
+                'descripcion' => 'Sesión de consultoría para identificar oportunidades de automatización con IA en tu empresa.',
+                'precio'      => 2500.00,
+                'existencia'  => 20,
+            ],
+            [
+                'nombre'      => 'Desarrollo de Chatbot',
+                'descripcion' => 'Diseño e implementación de chatbot inteligente para atención al cliente 24/7.',
+                'precio'      => 15000.00,
                 'existencia'  => 10,
             ],
             [
-                'nombre'      => 'Tenis Nike',
-                'descripcion' => 'Tenis deportivos talla 27',
-                'precio'      => 1500.00,
-                'existencia'  => 25,
-            ],
-            [
-                'nombre'      => 'Silla de oficina',
-                'descripcion' => 'Silla ergonómica con soporte lumbar',
-                'precio'      => 3500.00,
+                'nombre'      => 'Análisis Predictivo de Datos',
+                'descripcion' => 'Modelo de machine learning para predecir tendencias y comportamientos de tu negocio.',
+                'precio'      => 18000.00,
                 'existencia'  => 8,
             ],
             [
-                'nombre'      => 'Balón de fútbol',
-                'descripcion' => 'Balón oficial tamaño 5',
-                'precio'      => 450.00,
-                'existencia'  => 30,
+                'nombre'      => 'Automatización de Procesos RPA',
+                'descripcion' => 'Implementación de robots de software para automatizar tareas repetitivas y reducir errores.',
+                'precio'      => 22000.00,
+                'existencia'  => 5,
+            ],
+            [
+                'nombre'      => 'Dashboard de Business Intelligence',
+                'descripcion' => 'Panel de control interactivo con visualización de datos en tiempo real para toma de decisiones.',
+                'precio'      => 12000.00,
+                'existencia'  => 15,
+            ],
+            [
+                'nombre'      => 'Modelo de Visión por Computadora',
+                'descripcion' => 'Sistema de reconocimiento de imágenes para control de calidad o seguridad empresarial.',
+                'precio'      => 35000.00,
+                'existencia'  => 3,
             ],
         ];
 
@@ -47,7 +58,6 @@ class ProductoSeeder extends Seeder
                 'usuario_id' => $vendedor->id,
             ]);
 
-            // Asignar 1 o 2 categorías aleatorias a cada producto
             $categorias = Categoria::inRandomOrder()->take(2)->pluck('id');
             $producto->categorias()->attach($categorias);
         }

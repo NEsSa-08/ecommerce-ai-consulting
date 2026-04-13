@@ -11,24 +11,28 @@ class CategoriaSeeder extends Seeder
     {
         $categorias = [
             [
-                'nombre'      => 'Electrónica',
-                'descripcion' => 'Dispositivos y gadgets electrónicos',
+                'nombre'      => 'Consultoría',
+                'descripcion' => 'Servicios de asesoría y estrategia en inteligencia artificial.',
             ],
             [
-                'nombre'      => 'Ropa',
-                'descripcion' => 'Prendas de vestir para todas las edades',
+                'nombre'      => 'Automatización',
+                'descripcion' => 'Soluciones para automatizar procesos empresariales con IA.',
             ],
             [
-                'nombre'      => 'Hogar',
-                'descripcion' => 'Artículos para el hogar y decoración',
+                'nombre'      => 'Machine Learning',
+                'descripcion' => 'Modelos predictivos y análisis avanzado de datos.',
             ],
             [
-                'nombre'      => 'Deportes',
-                'descripcion' => 'Equipamiento deportivo y fitness',
+                'nombre'      => 'Chatbots',
+                'descripcion' => 'Asistentes virtuales inteligentes para atención al cliente.',
             ],
             [
-                'nombre'      => 'Alimentos',
-                'descripcion' => 'Productos alimenticios y bebidas',
+                'nombre'      => 'Business Intelligence',
+                'descripcion' => 'Dashboards y visualización de datos para toma de decisiones.',
+            ],
+            [
+                'nombre'      => 'Visión Artificial',
+                'descripcion' => 'Sistemas de reconocimiento de imágenes y video.',
             ],
         ];
 

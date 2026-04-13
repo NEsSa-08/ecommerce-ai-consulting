@@ -11,22 +11,26 @@ class UsuarioSeeder extends Seeder
     public function run(): void
     {
         // Crear administrador fijo
-        Usuario::create([
-            'nombre'    => 'Admin',
-            'apellidos' => 'Sistema',
-            'correo'    => 'admin@tuxtla.tecnm.mx',
-            'clave'     => Hash::make('123'),
-            'rol'       => 'administrador',
-        ]);
+        Usuario::firstOrCreate(
+            ['correo' => 'admin@tuxtla.tecnm.mx'],
+            [
+                'nombre'    => 'Admin',
+                'apellidos' => 'Sistema',
+                'clave'     => Hash::make('123'),
+                'rol'       => 'administrador',
+            ]
+        );
 
         // Crear gerente fijo
-        Usuario::create([
-            'nombre'    => 'Juan',
-            'apellidos' => 'Lopez',
-            'correo'    => 'jlopez@tuxtla.tecnm.mx',
-            'clave'     => Hash::make('123'),
-            'rol'       => 'gerente',
-        ]);
+        Usuario::firstOrCreate(
+            ['correo' => 'jlopez@tuxtla.tecnm.mx'],
+            [
+                'nombre'    => 'Juan',
+                'apellidos' => 'Lopez',
+                'clave'     => Hash::make('123'),
+                'rol'       => 'gerente',
+            ]
+        );
 
         // Generar 5 usuarios aleatorios con la factory
         Usuario::factory(5)->create();
