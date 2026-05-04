@@ -39,4 +39,10 @@ class UsuarioPolicy
 
         return $auth->rol === 'administrador';
     }
+
+    public function verDashboard(Usuario $auth): bool
+{
+    return $auth->rol === 'administrador';
+}
+
 }

@@ -21,7 +21,7 @@
                     <a href="/login" class="btn btn-outline-light px-4 py-2">Iniciar sesión</a>
                 @endguest
                 @auth
-                    <a href="/productos" class="btn btn-primary px-4 py-2">Ver productos</a>
+                    <a href="/catalogo" class="btn btn-primary px-4 py-2">Ver productos</a>
                     <a href="/ventas" class="btn btn-outline-light px-4 py-2">Mis compras</a>
                 @endauth
             </div>
@@ -83,7 +83,7 @@
 <div class="mb-5">
     <div class="d-flex justify-content-between align-items-center mb-3">
         <h5 style="font-weight: 700; color: #0f172a; margin: 0;">Productos disponibles</h5>
-        <a href="/productos" style="font-size: 0.85rem; color: #6366f1; text-decoration: none; font-weight: 600;">Ver todos →</a>
+        <a href="/catalogo" style="font-size: 0.85rem; color: #6366f1; text-decoration: none; font-weight: 600;">Ver todos →</a>
     </div>
     <div class="row g-3">
         @foreach(\App\Models\Producto::with(['categorias','usuario'])->take(4)->get() as $producto)

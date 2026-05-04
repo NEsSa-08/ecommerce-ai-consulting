@@ -46,6 +46,14 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        
+         // ── Disco privado para tickets ──
+    'privado' => [
+        'driver'     => 'local',
+        'root'       => storage_path('app/privado'),
+        'visibility' => 'private',
+        'throw'      => false,
+    ],
 
         's3' => [
             'driver' => 's3',

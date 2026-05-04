@@ -12,12 +12,18 @@ class Venta extends Model
     protected $table = 'ventas';
 
     protected $fillable = [
-        'producto_id',
-        'vendedor_id',
-        'cliente_id',
-        'fecha',
-        'total',
-    ];
+    'producto_id',
+    'vendedor_id',
+    'cliente_id',
+    'fecha',
+    'total',
+    'ticket',
+    'validada',
+];
+
+protected $casts = [
+    'validada' => 'boolean',
+];
 
     // Una venta pertenece a un producto
     public function producto()

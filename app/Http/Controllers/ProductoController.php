@@ -8,6 +8,8 @@ use Illuminate\Support\Facades\Log;
 use App\Http\Requests\StoreProductoRequest;
 use App\Http\Requests\UpdateProductoRequest;
 use App\Models\Categoria;
+use Illuminate\Support\Facades\Storage;
+
 
 class ProductoController extends Controller
 {
@@ -31,15 +33,24 @@ public function store(StoreProductoRequest $request)
 {
     $this->authorize('crear', Producto::class);
 
+    // Guardar fotos en disco público
+    $fotos = [];
+    if ($request->hasFile('fotos')) {
+        foreach ($request->file('fotos') as $foto) {
+            $path = $foto->store('productos', 'public');
+            $fotos[] = $path;
+        }
+    }
+
     $producto = Producto::create([
         'nombre'      => $request->nombre,
         'descripcion' => $request->descripcion,
         'precio'      => $request->precio,
         'existencia'  => $request->existencia,
         'usuario_id'  => auth()->id(),
+        'fotos'       => $fotos,
     ]);
 
-    // Sincronizar categorías
     if ($request->has('categorias')) {
         $producto->categorias()->sync($request->categorias);
     }
@@ -52,7 +63,6 @@ public function store(StoreProductoRequest $request)
 
     return redirect('/productos')->with('success', 'Producto creado.');
 }
-
     // Mostrar formulario de edición
     public function edit(Producto $producto)
 {
@@ -62,13 +72,32 @@ public function store(StoreProductoRequest $request)
 }
 
     // Actualizar producto
- public function update(UpdateProductoRequest $request, Producto $producto)
+public function update(UpdateProductoRequest $request, Producto $producto)
 {
     $this->authorize('editar', $producto);
 
-    $producto->update($request->only(['nombre', 'descripcion', 'precio', 'existencia']));
+    $fotos = $producto->fotos ?? [];
 
-    // Sincronizar categorías
+    if ($request->hasFile('fotos')) {
+        // Eliminar fotos anteriores
+        foreach ($fotos as $fotoAnterior) {
+            Storage::disk('public')->delete($fotoAnterior);
+        }
+        $fotos = [];
+        foreach ($request->file('fotos') as $foto) {
+            $path = $foto->store('productos', 'public');
+            $fotos[] = $path;
+        }
+    }
+
+    $producto->update([
+        'nombre'      => $request->nombre,
+        'descripcion' => $request->descripcion,
+        'precio'      => $request->precio,
+        'existencia'  => $request->existencia,
+        'fotos'       => $fotos,
+    ]);
+
     if ($request->has('categorias')) {
         $producto->categorias()->sync($request->categorias);
     } else {
@@ -97,4 +126,10 @@ public function store(StoreProductoRequest $request)
         $producto->delete();
         return redirect('/productos')->with('success', 'Producto eliminado.');
     }
+
+    public function catalogo()
+{
+    $productos = Producto::with(['categorias', 'usuario'])->get();
+    return view('productos.catalogo', compact('productos'));
+}
 }

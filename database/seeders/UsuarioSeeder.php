@@ -10,7 +10,7 @@ class UsuarioSeeder extends Seeder
 {
     public function run(): void
     {
-        // Crear administrador fijo
+        // Administrador fijo
         Usuario::firstOrCreate(
             ['correo' => 'admin@tuxtla.tecnm.mx'],
             [
@@ -20,7 +20,6 @@ class UsuarioSeeder extends Seeder
                 'rol'       => 'administrador',
             ]
         );
-
         // Crear gerente fijo
         Usuario::firstOrCreate(
             ['correo' => 'jlopez@tuxtla.tecnm.mx'],
@@ -32,7 +31,10 @@ class UsuarioSeeder extends Seeder
             ]
         );
 
-        // Generar 5 usuarios aleatorios con la factory
-        Usuario::factory(5)->create();
+        // 30 vendedores (gerentes)
+        Usuario::factory(30)->create(['rol' => 'gerente']);
+
+        // 70 compradores (clientes)
+        Usuario::factory(70)->create(['rol' => 'cliente']);
     }
 }

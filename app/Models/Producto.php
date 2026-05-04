@@ -17,8 +17,12 @@ class Producto extends Model
         'precio',
         'existencia',
         'usuario_id',
+        'fotos',
     ];
 
+    protected $casts = [
+    'fotos' => 'array',
+];
     // Un producto pertenece a un usuario (vendedor)
     public function usuario()
     {

@@ -1,42 +1,80 @@
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-
 @extends('layouts.app')
 
 @section('content')
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card p-4">
+                <h4 class="text-center mb-4" style="font-weight: 700; color: #1e293b;">Crear cuenta</h4>
 
-<div class="row justify-content-center">
-<div class="col-md-4">
+                @if($errors->any())
+                    <div class="alert alert-danger">
+                        <ul class="mb-0">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
 
-<h2 class="text-center">Registro</h2>
+                @if(session('success'))
+                    <div class="alert alert-success">{{ session('success') }}</div>
+                @endif
 
-@if ($errors->any())
-<div class="alert alert-danger">
-    <ul class="mb-0">
-        @foreach ($errors->all() as $error)
-            <li>{{ $error }}</li>
-        @endforeach
-    </ul>
+                <form method="POST" action="/register">
+                    @csrf
+
+                    <div class="mb-3">
+                        <label class="form-label">Nombre</label>
+                        <input type="text" name="nombre"
+                               class="form-control @error('nombre') is-invalid @enderror"
+                               value="{{ old('nombre') }}" placeholder="Tu nombre">
+                        @error('nombre')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Apellidos</label>
+                        <input type="text" name="apellidos"
+                               class="form-control @error('apellidos') is-invalid @enderror"
+                               value="{{ old('apellidos') }}" placeholder="Tus apellidos">
+                        @error('apellidos')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Correo electrónico</label>
+                        <input type="email" name="correo"
+                               class="form-control @error('correo') is-invalid @enderror"
+                               value="{{ old('correo') }}" placeholder="correo@ejemplo.com">
+                        @error('correo')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Contraseña</label>
+                        <input type="password" name="clave"
+                               class="form-control @error('clave') is-invalid @enderror"
+                               placeholder="Mínimo 6 caracteres">
+                        @error('clave')
+                            <div class="invalid-feedback">{{ $message }}</div>
+                        @enderror
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Confirmar contraseña</label>
+                        <input type="password" name="clave_confirmation"
+                               class="form-control" placeholder="Repite tu contraseña">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Registrarse</button>
+                    <a href="/login" class="btn btn-secondary w-100 mt-2">¿Ya tienes cuenta? Inicia sesión</a>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
-@endif
-
-<form method="POST" action="/register">
-    @csrf
-
-    <input class="form-control mb-2 @error('name') is-invalid @enderror" name="name" placeholder="Nombre" value="{{ old('name') }}">
-    <input class="form-control mb-2 @error('email') is-invalid @enderror" name="email" placeholder="Correo" value="{{ old('email') }}">
-    <input class="form-control mb-2 @error('password') is-invalid @enderror" type="password" name="password" placeholder="Contraseña">
-    <input class="form-control mb-2" type="password" name="password_confirmation" placeholder="Confirmar contraseña">
-   
-    <select class="form-control mb-2" name="rol">
-        <option value="cliente">Cliente</option>
-        <option value="empleado">Empleado</option>
-        <option value="gerente">Gerente</option>
-    </select>
-
-    <button class="btn btn-success w-100">Registrarse</button>
-</form>
-
-</div>
-</div>
-
 @endsection

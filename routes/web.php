@@ -6,6 +6,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ProductoController;
 use App\Http\Controllers\CategoriaController;
 use App\Http\Controllers\VentaController;
+use App\Http\Controllers\DashboardController;
+
 
 // Páginas públicas
 Route::get('/', fn() => view('welcome'));
@@ -25,7 +27,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth');
 Route::middleware('auth')->group(function () {
     Route::get('/cliente', fn() => view('cliente'));
     Route::get('/gerente', fn() => view('gerente'));
-    Route::get('/admin/dashboard', fn() => view('admin'));
+Route::middleware('auth')->get('/admin/dashboard', [DashboardController::class, 'index']);
 });
 
 // CRUD usuarios
@@ -63,3 +65,18 @@ Route::middleware('auth')->group(function () {
     Route::post('/ventas', [VentaController::class, 'store']);
     Route::get('/ventas/delete/{venta}', [VentaController::class, 'destroy']);
 });
+// Rutas 2FA
+Route::get('/verificar-codigo', [AuthController::class, 'showVerificarCodigo']);
+Route::post('/verificar-codigo', [AuthController::class, 'verificarCodigo']);
+
+Route::middleware('auth')->get('/ventas/ticket/{venta}', [VentaController::class, 'verTicket']);
+
+// Vista de productos para clientes
+Route::middleware('auth')->get('/catalogo', [ProductoController::class, 'catalogo']);
+
+// Compra del cliente
+Route::middleware('auth')->get('/comprar/{producto}', [VentaController::class, 'comprarForm']);
+Route::middleware('auth')->post('/comprar/{producto}', [VentaController::class, 'comprar']);
+
+//validar 
+Route::middleware('auth')->post('/ventas/validar/{venta}', [VentaController::class, 'validar']);

@@ -16,7 +16,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="/productos">
+            <form method="POST" action="/productos" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-3">
                     <label class="form-label">Nombre</label>
@@ -65,7 +65,11 @@
                     </select>
                     <small class="text-muted">Mantén Ctrl para seleccionar varias.</small>
                 </div>
-
+                <div class="mb-3">
+    <label class="form-label">Fotos del producto</label>
+    <input type="file" name="fotos[]" class="form-control" multiple accept="image/*">
+    <small class="text-muted">Puedes seleccionar múltiples imágenes (jpg, png).</small>
+</div>
                 <button type="submit" class="btn btn-primary w-100">Guardar</button>
                 <a href="/productos" class="btn btn-secondary w-100 mt-2">Cancelar</a>
             </form>

@@ -12,14 +12,16 @@ class StoreProductoRequest extends FormRequest
     }
 
     public function rules(): array
-    {
-        return [
-            'nombre'      => 'required|string|min:3|max:100|unique:productos,nombre',
-            'descripcion' => 'required|string|max:500',
-            'precio'      => 'required|numeric|min:0',
-            'existencia'  => 'required|integer|min:0',
-        ];
-    }
+{
+    return [
+        'nombre'      => 'required|string|min:3|max:100|unique:productos,nombre',
+        'descripcion' => 'required|string|max:500',
+        'precio'      => 'required|numeric|min:0',
+        'existencia'  => 'required|integer|min:0',
+        'fotos'       => 'nullable|array',
+        'fotos.*'     => 'image|mimes:jpg,jpeg,png|max:2048',
+    ];
+}
 
     public function messages(): array
     {

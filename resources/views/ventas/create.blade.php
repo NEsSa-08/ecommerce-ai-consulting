@@ -16,7 +16,7 @@
                 </div>
             @endif
 
-            <form method="POST" action="/ventas">
+            <form method="POST" action="/ventas" enctype="multipart/form-data">
                 @csrf
                 <div class="mb-3">
                     <label class="form-label">Producto</label>
@@ -57,7 +57,17 @@
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
                 </div>
+                <div class="mb-3">
+    <label class="form-label">Ticket de pago <span class="text-muted">(opcional)</span></label>
+    <input type="file" name="ticket" class="form-control @error('ticket') is-invalid @enderror"
+           accept="image/*">
+    @error('ticket')
 
+    //ticket
+        <div class="invalid-feedback">{{ $message }}</div>
+    @enderror
+    <small class="text-muted">Imagen del comprobante de pago (jpg, png).</small>
+</div>
                 <button type="submit" class="btn btn-primary w-100">Registrar venta</button>
                 <a href="/ventas" class="btn btn-secondary w-100 mt-2">Cancelar</a>
             </form>

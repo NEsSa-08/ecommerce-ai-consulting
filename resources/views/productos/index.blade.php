@@ -1,4 +1,5 @@
 @extends('layouts.app')
+@use('Illuminate\Support\Facades\Storage')
 
 @section('content')
 <div class="container mt-4">
@@ -49,6 +50,16 @@
                            onclick="return confirm('¿Eliminar este producto?')">Eliminar</a>
                     @endif
                 </td>
+                <td>
+    @if($producto->fotos && count($producto->fotos) > 0)
+        @foreach($producto->fotos as $foto)
+            <img src="{{ Storage::disk('public')->url($foto) }}"
+                 style="width: 50px; height: 50px; object-fit: cover; border-radius: 6px; margin: 2px;">
+        @endforeach
+    @else
+        <span class="text-muted" style="font-size: 0.8rem;">Sin fotos</span>
+    @endif
+</td>
             </tr>
             @empty
             <tr>

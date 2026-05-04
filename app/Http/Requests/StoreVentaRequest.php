@@ -12,13 +12,14 @@ class StoreVentaRequest extends FormRequest
     }
 
     public function rules(): array
-    {
-        return [
-            'producto_id' => 'required|integer|exists:productos,id',
-            'cliente_id'  => 'required|integer|exists:usuarios,id',
-            'fecha'       => 'required|date',
-        ];
-    }
+{
+    return [
+        'producto_id' => 'required|integer|exists:productos,id',
+        'cliente_id'  => 'required|integer|exists:usuarios,id',
+        'fecha'       => 'required|date',
+        'ticket'      => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
+    ];
+}
 
     public function messages(): array
     {
@@ -31,4 +32,6 @@ class StoreVentaRequest extends FormRequest
             'fecha.date'           => 'La fecha no tiene un formato válido.',
         ];
     }
+    
 }
+

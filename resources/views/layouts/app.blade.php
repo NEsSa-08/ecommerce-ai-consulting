@@ -233,7 +233,19 @@
 <nav class="navbar navbar-expand-lg">
     <div class="container d-flex justify-content-between align-items-center">
 
-        <a class="navbar-brand" href="/">
+       <a class="navbar-brand" href="
+@auth
+    @if(auth()->user()->rol === 'administrador')
+        /admin/dashboard
+    @elseif(auth()->user()->rol === 'gerente')
+        /gerente
+    @else
+        /cliente
+    @endif
+@else
+    /
+@endauth
+">
             <span class="ai-dot"></span>
             AI Consulting
         </a>
@@ -243,14 +255,18 @@
             <a href="/mision" class="nav-link">Misión</a>
             <a href="/vision" class="nav-link">Visión</a>
             <a href="/contacto" class="nav-link">Contacto</a>
-            @auth
-                <a href="/productos" class="nav-link">Productos</a>
-                <a href="/categorias" class="nav-link">Categorías</a>
-                <a href="/ventas" class="nav-link">Ventas</a>
-                @if(auth()->user()->rol === 'administrador')
-                    <a href="/users" class="nav-link">Usuarios</a>
-                @endif
-            @endauth
+           @auth
+    @if(auth()->user()->rol === 'cliente')
+        <a href="/catalogo" class="nav-link">Productos</a>
+    @else
+        <a href="/productos" class="nav-link">Productos</a>
+    @endif
+    <a href="/categorias" class="nav-link">Categorías</a>
+    <a href="/ventas" class="nav-link">Ventas</a>
+    @if(auth()->user()->rol === 'administrador')
+        <a href="/users" class="nav-link">Usuarios</a>
+    @endif
+@endauth
         </div>
 
         <div class="d-flex align-items-center gap-3">
